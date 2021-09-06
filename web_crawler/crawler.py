@@ -16,11 +16,13 @@ def _split_to_word(text):
     """Japanese morphological analysis with janome.
     Splitting text and creating words list.
     """
+    print('split to word')
     t = Tokenizer()
     return [token.surface for token in t.tokenize(text)]
 
 
 def _get_page(url):
+    print('get page')
     r = requests.get(url)
     if r.status_code == 200:
         return r.text
@@ -32,11 +34,13 @@ def _extract_url_links(html):
     >>> _extract_url_links('aa<a href="link1">link1</a>bb<a href="link2">link2</a>cc')
     ['link1', 'link2']
     """
+    print('extract url links')
     soup = BeautifulSoup(html, "html.parser")
     return soup.find_all('a')
 
 
 def add_to_index(keyword, url):
+    print('add to index')
     entry = col.find_one({'keyword': keyword})
     if entry:
         if url not in entry['url']:
@@ -48,6 +52,7 @@ def add_to_index(keyword, url):
 
 
 def add_page_to_index(url, html):
+    print('add page to index')
     body_soup = BeautifulSoup(html, "html.parser").find('body')
     for child_tag in body_soup.findChildren():
         if child_tag.name == 'script':
@@ -60,12 +65,14 @@ def add_page_to_index(url, html):
 
 
 def crawl_web(seed, max_depth):
+    print('crawl web')
     to_crawl = {seed}
     crawled = []
     next_depth = []
     depth = 0
     while to_crawl and depth <= max_depth:
         page_url = to_crawl.pop()
+        print('page_url:', page_url)
         if page_url not in crawled:
             html = _get_page(page_url)
             add_page_to_index(page_url, html)

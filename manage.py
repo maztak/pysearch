@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     if args.action == 'crawler':
         from web_crawler.crawler import crawl_web
-        crawl_web('http://docs.sphinx-users.jp/contents.html', 2)
+        crawl_web('https://docs.sphinx-users.jp/contents.html', 2)
     elif args.action == 'webpage':
         from search_engine import app
         app.run(debug=True, port=9000)
