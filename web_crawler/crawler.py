@@ -1,5 +1,5 @@
 import requests
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 
 from pymongo import MongoClient
 from janome.tokenizer import Tokenizer
@@ -18,7 +18,11 @@ def _split_to_word(text):
     """
     print('split to word')
     t = Tokenizer()
-    return [token.surface for token in t.tokenize(text)]
+    surfaces = []
+    for token in t.tokenize(text):
+        print('surface: ', token.surface)
+        surfaces.append(token.surface)
+    return surfaces
 
 
 def _get_page(url):
@@ -28,22 +32,23 @@ def _get_page(url):
         return r.text
 
 
-def _extract_url_links(html):
-    """extract url links
-
-    >>> _extract_url_links('aa<a href="link1">link1</a>bb<a href="link2">link2</a>cc')
-    ['link1', 'link2']
-    """
+def _extract_url_links(base_url, html):    
     print('extract url links')
     soup = BeautifulSoup(html, "html.parser")
-    return soup.find_all('a')
-
+    anchors = soup.find_all('a')
+    links = []
+    for anchor in anchors:
+      href = anchor.get('href')
+      link = urljoin(base_url, href)
+      links.append(link)
+    return links
 
 def add_to_index(keyword, url):
-    print('add to index')
     entry = col.find_one({'keyword': keyword})
     if entry:
         if url not in entry['url']:
+            print('add to index')
+            print('keyword: ', keyword, 'url: ', url)
             entry['url'].append(url)
             col.save(entry)
         return
@@ -64,7 +69,7 @@ def add_page_to_index(url, html):
                 add_to_index(word, url)
 
 
-def crawl_web(seed, max_depth):
+def crawl_web(base_url, seed, max_depth):
     print('crawl web')
     to_crawl = {seed}
     crawled = []
@@ -74,9 +79,10 @@ def crawl_web(seed, max_depth):
         page_url = to_crawl.pop()
         print('page_url:', page_url)
         if page_url not in crawled:
+            print('crawling page url:', page_url)
             html = _get_page(page_url)
             add_page_to_index(page_url, html)
-            to_crawl = to_crawl.union(_extract_url_links(html))
+            to_crawl = to_crawl.union(_extract_url_links(base_url, html))
             crawled.append(page_url)
         if not to_crawl:
             to_crawl, next_depth = next_depth, []

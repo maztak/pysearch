@@ -26,13 +26,38 @@ More details are avairable from [My Tech Blog(Japanese)](http://nwpct1.hatenablo
 
     ```
     $ cd SearchEngine
-    $ pip install -r requirements.txt -c constraints.txt
+    $ pip3 install -r requirements.txt -c constraints.txt
     ```
 
 3. MongoDB settings
+
+    Install MongoDB
+    ```
+    $ 
+    ```
+
+    Install pymongo
+    ```
+    $
+    ```
+
+    Start mongo shell and create table(e.g. index table)
+    ```
+    $ mongo
+    > use index
+    ```
+
+    in `config.py`, set the mongo url, like below.
+
+    ```
+    MONGO_URL = 'mongodb://127.0.0.1:27017/index'
+    ```
+
+    If you want to use MongoDB with GUI, I recommend free software [Robo 3T](https://robomongo.org/). Only Robo 3T is sufficient(No Studio 3T is needed).
+
 4. Run
 
     ```
-    $ python manage.py crawler # build a index
-    $ python manage.py webpage # access to http://127.0.0.1:5000
+    $ python3 manage.py crawler # build a index
+    $ python3 manage.py webpage # access to http://127.0.0.1:9000
     ```
