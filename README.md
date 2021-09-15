@@ -19,13 +19,13 @@ More details are avairable from [My Tech Blog(Japanese)](http://nwpct1.hatenablo
 1. Clone repository
 
     ```
-    $ git clone git@github.com:mejiro/SearchEngine.git
+    $ git clone git@github.com:maztak/pysearch.git
     ```
     
 2. Install python packages
 
     ```
-    $ cd SearchEngine
+    $ cd pysearch
     $ pip3 install -r requirements.txt -c constraints.txt
     ```
 
